@@ -5,6 +5,10 @@ you.
 
 ## Getting Started
 
+### Tailwind
+
+TailwindCSS setup heavily borrowed from [jacekschae/shadow-cljs-tailwindcss](https://github.com/jacekschae/shadow-cljs-tailwindcss).
+
 ### Project Overview
 
 * Architecture:
