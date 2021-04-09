@@ -1,4 +1,5 @@
-(ns tictac.db)
+(ns tictac.db
+  (:require [tictac.engine :as e]))
 
 (def default-db
-  {:name "re-frame"})
+  {:board e/empty-board})

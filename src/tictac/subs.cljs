@@ -3,6 +3,6 @@
    [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
- ::name
+ ::board
  (fn [db]
-   (:name db)))
+   (:board db)))
