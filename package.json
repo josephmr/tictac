@@ -8,7 +8,8 @@
 		"postcss:watch": "postcss src/css/tailwind.css -o ./resources/public/css/main.css --verbose -w",
 		"postcss:release": "NODE_ENV=production postcss src/css/tailwind.css -o ./resources/public/css/main.css --verbose",
 		"dev": "run-p -l *:watch",
-		"release": "run-s *:release"
+		"release": "run-s *:release",
+    "build": "npm run release"
 	},
 	"dependencies": {
 		"highlight.js": "10.7.1",

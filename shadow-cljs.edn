@@ -18,7 +18,13 @@
   8290 "target/browser-test"}
 
  :builds
- {:app
+ {:fn   {:target           :node-library
+         :js-options       {:js-package-dirs ["functions/node_modules"]}
+         :compiler-options {:infer-externs :auto}
+         :output-to        "functions/index.js"
+         :exports-var      tictac.functions.fn/exports}
+
+  :app
   {:target     :browser
    :output-dir "resources/public/js/compiled"
    :asset-path "/js/compiled"
