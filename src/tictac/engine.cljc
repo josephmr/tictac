@@ -47,8 +47,7 @@
 
 (defn move
   [board {:keys [player cell]}]
-  (let [cell (->index cell)
-        player (or player (turn board))]
+  (let [cell (->index cell)]
     (if (and (= player (turn board))
              (nil? (get board cell)))
       (assoc board cell player)
@@ -58,21 +57,24 @@
               (get {maximizing ##Inf :tie 0} winner ##-Inf))]
   (def minimax
     "Finds next move via minimax for the current player of a tic-tac-toe game"
-    (memoize (fn
-               ([board] (let [player (turn board)] (minimax board player player)))
-               ([board player maximizing]
-                (if-let [winner (winner? board)]
-                  {:score (score maximizing winner)}
-                  (let [mfun  (if (= player maximizing) max-key min-key)
-                        moves (for [cell (available-cells board)
-                                    :let [m {:cell cell :player player}
-                                          new-board (move board m)
-                                          result (minimax new-board (turn new-board) maximizing)]]
-                                (merge m result))]
-                    (apply mfun :score moves))))))))
+    (memoize  (fn
+                ([board] (let [player (turn board)] (minimax board player player)))
+                ([board player maximizing]
+                 (if-let [winner (winner? board)]
+                   {:score (score maximizing winner)}
+                   (let [mfun  (if (= player maximizing) max-key min-key)
+                         moves (for [cell (available-cells board)
+                                     :let [m {:cell cell :player player}
+                                           new-board (move board m)
+                                           result (minimax new-board (turn new-board) maximizing)]]
+                                 (assoc m :score (:score result)))]
+                     (apply mfun :score moves))))))))
 
 (comment
-  (def board [nil nil nil nil nil nil nil nil nil])
+  (def board [nil nil nil
+              nil "X" nil
+              nil nil nil])
+  (minimax board)
 
   (def new-board (-> board
                      (move {:player "X" :cell [0 0]})
@@ -82,7 +84,8 @@
 
   (def almost-done ["O" nil "X"
                     "X" nil "X"
-                    "X" "O" "O"])
+                    "X" "O" nil])
+  (available-cells board)
   (minimax almost-done)
   (minimax board)
 
