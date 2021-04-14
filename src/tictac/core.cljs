@@ -4,8 +4,7 @@
    [re-frame.core :as re-frame]
    [tictac.events :as events]
    [tictac.views :as views]
-   [tictac.config :as config]
-   ))
+   [tictac.config :as config]))
 
 (when (= "localhost" js/location.hostname)
   (.useFunctionsEmulator (js/firebase.functions) "http://localhost:5001")
@@ -20,9 +19,12 @@
   (re-frame/clear-subscription-cache!)
   (let [root-el (.getElementById js/document "app")]
     (rdom/unmount-component-at-node root-el)
-    (rdom/render [views/main-panel] root-el)))
+    (rdom/render [views/router] root-el)))
 
 (defn init []
   (re-frame/dispatch-sync [::events/initialize-db])
   (dev-setup)
   (mount-root))
+
+(comment
+  (re-frame/dispatch-sync [::events/initialize-db]))

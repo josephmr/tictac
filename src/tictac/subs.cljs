@@ -3,6 +3,11 @@
    [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
+ ::page
+ (fn [db]
+   (:page db)))
+
+(re-frame/reg-sub
  ::board
  (fn [db]
-   (:board db)))
+   (get-in db [:game :board])))

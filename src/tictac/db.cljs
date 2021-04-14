@@ -20,4 +20,4 @@
                      :cell [1 1]}))
 
 (def default-db
-  {:board e/empty-board})
+  {:page :start})
