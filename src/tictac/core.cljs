@@ -7,6 +7,10 @@
    [tictac.config :as config]
    ))
 
+(when (= "localhost" js/location.hostname)
+  (.useFunctionsEmulator (js/firebase.functions) "http://localhost:5001")
+  (.settings (js/firebase.firestore) #js {:host "localhost:8080"
+                                          :ssl false}))
 
 (defn dev-setup []
   (when config/debug?

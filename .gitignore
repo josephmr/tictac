@@ -9,6 +9,11 @@
 /.lein-*
 /.nrepl-port
 
+# firebase
+/.firebase
+# generated code
+functions/index.js
+
 # Node.js dependencies
 /node_modules/
 

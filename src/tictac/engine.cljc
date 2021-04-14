@@ -1,7 +1,7 @@
 (ns tictac.engine)
 
-(defn- x-cell? [x] (= :x x))
-(defn- o-cell? [o] (= :o o))
+(defn- x-cell? [x] (= "X" x))
+(defn- o-cell? [o] (= "O" o))
 (defn- full? [b] (not-any? nil? b))
 (defn- ->index
   "Converts a [row col] to the board index.
@@ -25,14 +25,14 @@
 
 (defn turn
   "Returns whose turn it is given a board.
-  :x, :o, or nil"
+  \"X\", \"O\", or nil"
   [board]
   (let [xs      (count (filter x-cell? board))
         os      (count (filter o-cell? board))]
     (cond
       (full? board) nil
-      (< os xs)     :o
-      :else         :x)))
+      (< os xs)     "O"
+      :else         "X")))
 
 (let [winners [[0 1 2] [3 4 5] [6 7 8]
                [0 3 6] [1 4 7] [2 5 8]
@@ -75,14 +75,14 @@
   (def board [nil nil nil nil nil nil nil nil nil])
 
   (def new-board (-> board
-                     (move {:player :x :cell [0 0]})
-                     (move {:player :o :cell [1 1]})
-                     (move {:player :x :cell [0 1]})
-                     (move {:player :o :cell [1 2]})))
+                     (move {:player "X" :cell [0 0]})
+                     (move {:player "O" :cell [1 1]})
+                     (move {:player "X" :cell [0 1]})
+                     (move {:player "O" :cell [1 2]})))
 
-  (def almost-done [:o nil :x
-                    :x nil :x
-                    :x :o :o])
+  (def almost-done ["O" nil "X"
+                    "X" nil "X"
+                    "X" "O" "O"])
   (minimax almost-done)
   (minimax board)
 
