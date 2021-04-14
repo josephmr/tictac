@@ -49,7 +49,8 @@
   [board {:keys [player cell]}]
   (let [cell (->index cell)]
     (if (and (= player (turn board))
-             (nil? (get board cell)))
+             (nil? (get board cell))
+             (not (winner? board)))
       (assoc board cell player)
       board)))
 
@@ -72,21 +73,15 @@
 
 (comment
   (def board [nil nil nil
-              nil "X" nil
+              nil nil nil
               nil nil nil])
-  (minimax board)
 
-  (def new-board (-> board
-                     (move {:player "X" :cell [0 0]})
-                     (move {:player "O" :cell [1 1]})
-                     (move {:player "X" :cell [0 1]})
-                     (move {:player "O" :cell [1 2]})))
+  (-> board
+      (move {:player "X" :cell [0 0]})
+      (move {:player "O" :cell [1 1]})
+      (move {:player "X" :cell [0 1]})
+      (move {:player "O" :cell [1 2]}))
 
-  (def almost-done ["O" nil "X"
-                    "X" nil "X"
-                    "X" "O" nil])
-  (available-cells board)
-  (minimax almost-done)
   (minimax board)
 
   ;; Recursively use minimax to play a tic-tac-toe game
@@ -94,4 +89,3 @@
     (if-let [end (winner? board)]
       [board  end]
       (recur (move board (minimax board))))))
-
