@@ -1,0 +1,61 @@
+#+TITLE: Architecture
+
+* Firestore Documents
+** Game
+
+The ~Game~ doc contains the current tic-tac-toe board state and the two players.
+
+#+begin_src json
+{
+    "board": [null, null, null, null, null, null, null, null, null],
+    "x-player": "<uuid>",
+    "o-player": "<uuid>"
+}
+#+end_src
+
+* States
+
+Any game progresses through the following states. There is not an explicit state
+property on the ~Game~ doc as each state can be infered from the document
+fields.
+
+- Creation
+
+  This state results in the creation of the ~Game~ doc.
+
+- Joining
+
+  A game is in the joining state when only one of ~x-player~ or ~o-player~ is
+  set.
+
+- In Progress
+
+  A game is in progress when both players are set but the game board is not
+  complete (i.e. there is no winner or draw).
+
+- Finished
+
+  A game is finished when the board state indicates either a winner or a draw.
+
+** Creation
+
+A ~Game~ doc is created when a player initiates a game to be played with another
+person. No documents will be made for games played against AI.
+
+The user will indicate they wish to play against another person and pick to be
+either ~X~ or ~O~. This will trigger creation of the ~Game~ doc and provide a
+link to use to invite the opposing player.
+
+There is no automated matchmaking.
+
+** Joining
+
+A player visiting a provided link will join as the remaining player, either ~X~
+or ~O~ depending on the first player's choice. This will update the doc and
+trigger the start of the game on the client.
+
+** Completion
+
+When the game is complete the players will be presented with the option to
+replay. If chosen, the board will be reset and the assignment of ~X~ and ~O~
+will be randomly chosen.
