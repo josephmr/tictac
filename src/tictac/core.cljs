@@ -22,9 +22,6 @@
     (rdom/render [views/router] root-el)))
 
 (defn init []
-  (re-frame/dispatch-sync [::events/initialize-db])
+  (re-frame/dispatch-sync [::events/initialize (random-uuid)])
   (dev-setup)
   (mount-root))
-
-(comment
-  (re-frame/dispatch-sync [::events/initialize-db]))

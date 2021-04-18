@@ -1,15 +1,30 @@
 (ns tictac.events
   (:require
-   [re-frame.core :as re-frame :refer [path]]
+   [re-frame.core :as re-frame]
    [tictac.db :as db]
    [day8.re-frame.tracing :refer-macros [fn-traced]]
-
    [tictac.engine :as e]))
 
-(re-frame/reg-event-db
- ::initialize-db
- (fn-traced [_ _]
-            db/default-db))
+;; Effect to storage provided key value into localStorage
+;; e.g. {::local-storage :foo "bar"}
+(re-frame/reg-fx
+ ::local-storage
+ (fn-traced [[key value]]
+            (.setItem js/localStorage key value)))
+
+;; Coeffect to get :uuid from localStorage and assoc in cofx
+(re-frame/reg-cofx
+ ::uuid
+ (fn-traced [cofx]
+            (assoc cofx :uuid (.getItem js/localStorage :uuid))))
+
+;; Initialize the db with base game state and store uuid in localStorage
+(re-frame/reg-event-fx
+ ::initialize
+ [(re-frame/inject-cofx ::uuid)]
+ (fn-traced [{:keys [uuid]} [_ new-uuid]]
+            {:db db/default-db
+             ::local-storage [:uuid (or uuid new-uuid)]}))
 
 (re-frame/reg-event-fx
  ::play
@@ -30,5 +45,5 @@
                             {:db (assoc-in db [:game :board] board)})))))
 
 (comment
-  (re-frame/dispatch-sync [::initialize-db])
+  (re-frame/dispatch-sync [::initialize (random-uuid)])
   (re-frame/dispatch-sync [::move [0 2]]))
