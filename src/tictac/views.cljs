@@ -61,4 +61,5 @@
     (case page
       :join [scaffold [:h1 "Joining"]]
       :start [scaffold [start]]
-      :game [scaffold [game]])))
+      :game [scaffold [game]]
+      [scaffold [:h1 {:class "text-6xl"} "Error"]])))

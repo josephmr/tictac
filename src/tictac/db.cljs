@@ -25,3 +25,33 @@
   [url-path]
   {:page :join
    :game-id url-path})
+
+(defonce subscriptions (atom {}))
+
+(defn subscribe
+  "Subscribes to Firestore document and calls callback with document data for
+  each change.
+
+  Only one subscription is allowed per document. Attempting to subscribe again
+  to the same document will have no effect. First unsubscribe, then subscribe
+  again if necessary."
+  [ref f]
+  (when (not (@subscriptions ref))
+    (let [unsub
+          (.. js/firebase
+              firestore
+              (doc ref)
+              (onSnapshot (fn [snapshot] (f (js->clj (.data snapshot)
+                                                     :keywordize-keys true)))))]
+      (swap! subscriptions assoc ref unsub))))
+
+(defn unsubscribe
+  "Unsubscribes from a given Firestore document."
+  [ref]
+  (when-let [unsub (@subscriptions ref)]
+    (unsub)
+    (swap! subscriptions dissoc ref)))
+
+(comment (subscribe "games/foo" #(println %))
+         @subscriptions
+         (unsubscribe "games/foo"))
