@@ -6,25 +6,25 @@
    [tictac.engine :as e]))
 
 ;; Effect to storage provided key value into localStorage
-;; e.g. {::local-storage :foo "bar"}
+;; e.g. {:local-storage :foo "bar"}
 (re-frame/reg-fx
- ::local-storage
+ :local-storage
  (fn-traced [[key value]]
             (.setItem js/localStorage key value)))
 
 ;; Coeffect to get :uuid from localStorage and assoc in cofx
 (re-frame/reg-cofx
- ::uuid
+ :uuid
  (fn-traced [cofx]
             (assoc cofx :uuid (.getItem js/localStorage :uuid))))
 
 ;; Initialize the db with base game state and store uuid in localStorage
 (re-frame/reg-event-fx
  ::initialize
- [(re-frame/inject-cofx ::uuid)]
+ [(re-frame/inject-cofx :uuid)]
  (fn-traced [{:keys [uuid]} [_ new-uuid]]
             {:db db/default-db
-             ::local-storage [:uuid (or uuid new-uuid)]}))
+             :local-storage [:uuid (or uuid new-uuid)]}))
 
 (re-frame/reg-event-fx
  ::play
