@@ -18,12 +18,20 @@
  (fn-traced [cofx]
             (assoc cofx :uuid (.getItem js/localStorage :uuid))))
 
+(re-frame/reg-cofx
+ :url-path
+ (fn-traced [cofx]
+            (let [path (subs (.-pathname js/window.location) 1)]
+              (assoc cofx :url-path (when (seq path) path)))))
+
 ;; Initialize the db with base game state and store uuid in localStorage
 (re-frame/reg-event-fx
  ::initialize
- [(re-frame/inject-cofx :uuid)]
- (fn-traced [{:keys [uuid]} [_ new-uuid]]
-            {:db db/default-db
+ [(re-frame/inject-cofx :uuid) (re-frame/inject-cofx :url-path)]
+ (fn-traced [{:keys [uuid url-path]} [_ new-uuid]]
+            {:db (if url-path
+                   (db/join url-path)
+                   db/default)
              :local-storage [:uuid (or uuid new-uuid)]}))
 
 (re-frame/reg-event-fx

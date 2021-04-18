@@ -1,5 +1,4 @@
-(ns tictac.db
-  (:require [tictac.engine :as e]))
+(ns tictac.db)
 
 (defn handle
   "Call Firebase function with given event.
@@ -19,5 +18,10 @@
                      :player "X"
                      :cell [1 1]}))
 
-(def default-db
+(def default
   {:page :start})
+
+(defn join
+  [url-path]
+  {:page :join
+   :game-id url-path})

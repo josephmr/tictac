@@ -59,5 +59,6 @@
 (defn router []
   (let [page @(re-frame/subscribe [::subs/page])]
     (case page
+      :join [scaffold [:h1 "Joining"]]
       :start [scaffold [start]]
       :game [scaffold [game]])))
