@@ -22,16 +22,27 @@
 ;; path in the db
 (r/reg-fx
  :sub
- (fn-traced [{:keys [doc path]}]
+ (fn-traced [{:keys [doc path dispatch]}]
             (db/subscribe
              doc
              (fn [data]
-               (r/dispatch [::sub-changed path data])))))
+               (when path (r/dispatch [::sub-changed path data]))
+               (when dispatch (r/dispatch [dispatch data]))))))
 
 (r/reg-event-db
  ::sub-changed
  (fn-traced [db [_ path data]]
             (assoc-in db path data)))
+
+(r/reg-event-fx
+ ::game-changed
+ [(r/inject-cofx :uuid)]
+ (fn-traced [{:keys [uuid db]} [_ {:keys [x-player o-player] :as game}]]
+            (when (or (= x-player uuid)
+                      (= o-player uuid))
+              {:db (-> db
+                       (assoc :page :game)
+                       (assoc :game game))})))
 
 ;; Coeffect to get :uuid from localStorage and assoc in cofx
 (r/reg-cofx
@@ -60,10 +71,11 @@
 
 (r/reg-event-fx
  ::join
- (fn-traced [_ [_ game-id]]
+ [(r/inject-cofx :uuid)]
+ (fn-traced [{uuid :uuid} [_ game-id]]
             {:db (db/join game-id)
-             :fx [[:sub {:doc (str "games/" game-id) :path [:game]}]
-                  [:handle {:event :join :game-id game-id}]]}))
+             :fx [[:sub {:doc (str "games/" game-id) :dispatch ::game-changed}]
+                  [:handle {:event :join :game-id game-id :uuid uuid}]]}))
 
 (r/reg-event-fx
  ::play

@@ -13,6 +13,9 @@
 
 (comment
   (tictac.db/handle {:event :create})
+  (tictac.db/handle {:event :join
+                     :game-id "aRHjUbnthalNojLsl696"
+                     :uuid "player-1"})
   (tictac.db/handle {:event :move
                      :game-id "NETkLgB6W00CKrICFPcB"
                      :player "X"

@@ -45,6 +45,21 @@
   (. (coll "games")
      (add (clj->js {:board e/empty-board}))))
 
+(defmethod handle :join
+  [{:keys [game-id uuid]}]
+  (update! (doc "games" game-id)
+           (fn [doc]
+             (cond
+               (and (:x-player doc)
+                    (:o-player doc))
+               doc
+
+               (:x-player doc)
+               (assoc doc :o-player uuid)
+
+               :else
+               (assoc doc :x-player uuid)))))
+
 (defn wrap-fn
   [handler]
   (fn
